@@ -1,5 +1,6 @@
 #include "Contact.h"
 
+void LoadContact(Contact* con);
 //初始化通讯录
 void InitContact(Contact* con)
 {
@@ -12,6 +13,9 @@ void InitContact(Contact* con)
 	}
 	con->size = 0;//初始化已有好友数
 	con->Capacity = DEFAULT_CAPACITY;//初始化默认容量
+
+	//加载已保存的好友信息
+	LoadContact(con);
 }
 
 //输出对应下标元素信息
@@ -188,25 +192,51 @@ void ModifyContact(Contact* con)
 	}
 }
 
+int Name_Sort(const void* data1,const void* data2)
+{
+	return strcmp(((PeoInfo*)data1)->name, ((PeoInfo*)data2)->name);
+}
+int Age_Sort(const void* data1,const void* data2)
+{
+	return ((PeoInfo*)data1)->age - ((PeoInfo*)data2)->age;
+}
+int Addr_Sort(const void* data1,const void* data2)
+{
+	return strcmp(((PeoInfo*)data1)->addr, ((PeoInfo*)data2)->addr);
+}
+
 //排序好友信息(按名字首字母排序，从小到大)
 void SortContact(Contact* con)
 {
-	PeoInfo cmp;
-	int i = 0;
-	int j = 0;
-	for (i = 0; i < con->size; i++)
+	int input = 0;
+	printf("*** 1、按名字增序  2、按年龄增序 ***\n");
+	printf("*** 3、按地址增序  0、取消排序   ***\n");
+	do
 	{
-		for (j = 0; j < con->size-1-i; j++)
+		printf("请选择排序方式:>");
+		scanf("%d", &input);
+		switch (input)
 		{
-			if (strcmp(con->data[j].name, con->data[j + 1].name) > 0)
-			{
-				cmp = con->data[j];
-				con->data[j] = con->data[j+1];
-				con->data[j+1] = cmp;
-			}
+		case NAME_SORT:
+			qsort(con->data,con->size,sizeof(PeoInfo), Name_Sort);
+			printf("排序成功\n");
+			break;
+		case AGE_SORT:
+			qsort(con->data, con->size, sizeof(PeoInfo), Age_Sort);
+			printf("排序成功\n");
+			break;
+		case ADDR_SORT:
+			qsort(con->data, con->size, sizeof(PeoInfo), Addr_Sort);
+			printf("排序成功\n");
+			break;
+		case UNDO_SORT:
+			printf("取消排序\n");
+			break;
+		default:
+			printf("输入错误\n");
+			break;
 		}
-	}
-	printf("已按名字从小到大排序成功!\n");
+	} while (input && (input > ADDR_SORT));
 }
 
 //销毁通讯录
@@ -214,4 +244,44 @@ void Destory_Contact(Contact* con)
 {
 	free(con->data);
 	con->data = NULL;
+}
+
+//保存好友信息
+void SaveContact(Contact* con)
+{
+	FILE* pfWrite = fopen("INFOMATION.txt", "wb");
+	if (pfWrite == NULL)
+	{
+		printf("SaveContact:: %s\n", strerror(errno));
+		return;
+	}
+	//存放信息到文件中
+	int i = 0;
+	for (i = 0; i < con->size; i++)
+	{
+		fwrite(&(con->data[i]), sizeof(PeoInfo), 1, pfWrite);
+	}
+	printf("保存成功\n");
+	fclose(pfWrite);
+	pfWrite = NULL;
+}
+
+//加载好友信息
+void LoadContact(Contact* con)
+{
+	PeoInfo tmp = { 0 };
+	FILE* pfRead = fopen("INFOMATION.txt", "rb");
+	if (pfRead == NULL)
+	{
+		printf("LoadContact::%s\n", strerror(errno));
+		return;
+	}
+	while (fread(&tmp, sizeof(PeoInfo), 1, pfRead))
+	{
+		Check_Capacity(con);
+		con->data[con->size] = tmp;
+		con->size++;
+	}
+	fclose(pfRead);
+	pfRead = NULL;
 }

@@ -24,6 +24,7 @@
     <ProjectGuid>{34d5167b-630c-441e-accc-fdc23676cc2f}</ProjectGuid>
     <RootNamespace>ContactDynamic</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Contact_file</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

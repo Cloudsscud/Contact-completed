@@ -6,7 +6,7 @@ void menu()
 	printf("***1、Add       2、del   ***\n");
 	printf("***3、search    4、modify***\n");
 	printf("***5、show      6、sort  ***\n");
-	printf("***       0、exit        ***\n");
+	printf("***7、save      0、exit  ***\n");
 	printf("****************************\n");
 }
 int main()
@@ -14,7 +14,7 @@ int main()
 	int input = 0;
 	//生成通讯录		
 	Contact con;
-	//初始化通讯录
+	//初始化通讯录,并读取好友信息
 	InitContact(&con);
 
 	do
@@ -51,6 +51,9 @@ int main()
 			//销毁该通讯录
 			Destory_Contact(&con);
 			printf("您已退出\n");
+			break;
+		case SAVE:
+			SaveContact(&con);
 			break;
 		default:
 			printf("您输入了错误信息\n");

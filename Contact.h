@@ -3,6 +3,7 @@
 #include<string.h>
 #include<stdlib.h>
 #include<assert.h>
+#include<errno.h>
 
 //#define MAX 1000
 
@@ -38,7 +39,16 @@ enum Option//增加可读性
 	SEARCH,
 	MODIFY,
 	SHOW,
-	SORT
+	SORT,
+	SAVE
+};
+
+enum Sort
+{
+	UNDO_SORT,
+	NAME_SORT,
+	AGE_SORT,
+	ADDR_SORT
 };
 
 //初始化通讯录
@@ -64,3 +74,6 @@ void ModifyContact(Contact* con);
 
 //排序好友信息
 void SortContact(Contact* con);
+
+//保存好友信息
+void SaveContact(Contact* con);
